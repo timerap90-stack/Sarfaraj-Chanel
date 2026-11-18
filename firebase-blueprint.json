@@ -1,0 +1,180 @@
+{
+  "entities": {
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public high score record for an authenticated Neon Dash player.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase user UID matching the document ID."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Player display name shown on the global leaderboard (1-30 chars)."
+        },
+        "bestScore": {
+          "type": "integer",
+          "description": "Highest score achieved by this player."
+        },
+        "maxDistanceMeters": {
+          "type": "integer",
+          "description": "Longest run distance in meters achieved by this player."
+        },
+        "bestCombo": {
+          "type": "integer",
+          "description": "Highest orb combo streak achieved."
+        },
+        "gamesPlayed": {
+          "type": "integer",
+          "description": "Total completed runs submitted to the leaderboard."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when entry was created (FieldValue.serverTimestamp())."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when entry was last updated (FieldValue.serverTimestamp())."
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "bestScore",
+        "maxDistanceMeters",
+        "bestCombo",
+        "gamesPlayed",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "PlayerProfile": {
+      "title": "PlayerProfile",
+      "description": "Private player preferences and cumulative account statistics.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Authenticated Firebase user UID."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Player display name."
+        },
+        "email": {
+          "type": "string",
+          "description": "Optional Google account email (owner-only)."
+        },
+        "musicEnabled": {
+          "type": "boolean",
+          "description": "Whether dynamic background synth music is enabled."
+        },
+        "sfxEnabled": {
+          "type": "boolean",
+          "description": "Whether gameplay sound effects are enabled."
+        },
+        "totalOrbsCollected": {
+          "type": "integer",
+          "description": "Cumulative energy orbs collected across runs."
+        },
+        "totalRuns": {
+          "type": "integer",
+          "description": "Total runs played."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of profile creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last profile update."
+        }
+      },
+      "required": [
+        "userId",
+        "displayName",
+        "musicEnabled",
+        "sfxEnabled",
+        "totalOrbsCollected",
+        "totalRuns",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "GameRun": {
+      "title": "GameRun",
+      "description": "Immutable telemetry record of a single endless runner session.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase user UID."
+        },
+        "score": {
+          "type": "integer",
+          "description": "Final score for the run."
+        },
+        "distanceMeters": {
+          "type": "integer",
+          "description": "Distance covered in meters."
+        },
+        "orbsCollected": {
+          "type": "integer",
+          "description": "Number of energy orbs collected."
+        },
+        "shieldsUsed": {
+          "type": "integer",
+          "description": "Number of shield power-ups collected/triggered."
+        },
+        "boostsUsed": {
+          "type": "integer",
+          "description": "Number of speed boost power-ups collected."
+        },
+        "peakIntensity": {
+          "type": "integer",
+          "description": "Peak intensity tier reached (1 to 4)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when run finished."
+        }
+      },
+      "required": [
+        "userId",
+        "score",
+        "distanceMeters",
+        "orbsCollected",
+        "shieldsUsed",
+        "boostsUsed",
+        "peakIntensity",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/leaderboard/{userId}": {
+      "schema": {
+        "$ref": "#/entities/LeaderboardEntry"
+      },
+      "description": "Global player high scores ordered by bestScore."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/PlayerProfile"
+      },
+      "description": "Owner-only player profile, audio preferences, and totals."
+    },
+    "/users/{userId}/runs/{runId}": {
+      "schema": {
+        "$ref": "#/entities/GameRun"
+      },
+      "description": "Owner-only personal run history logs."
+    }
+  }
+}
